@@ -47,7 +47,7 @@ public class RPGVisualPiece : MonoBehaviour
 		if (enabled)
 		{
 			potentialLandingSquares.Clear();
-			BoardManager.Instance.GetSquareGOsWithinRadius(potentialLandingSquares, thisTransform.position, SquareCollisionRadius);
+			RPGBoardManager.Instance.GetSquareGOsWithinRadius(potentialLandingSquares, thisTransform.position, SquareCollisionRadius);
 
 			if (potentialLandingSquares.Count == 0)
 			{ // piece moved off board

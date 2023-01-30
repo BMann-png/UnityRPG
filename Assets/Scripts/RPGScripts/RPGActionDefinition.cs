@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class RPGActionDefinition : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    bool InteractWithPiece(int actionValue, GameObject pieceBoi)
     {
-        
-    }
+        if (TryGetComponent<Health>(out Health h))
+        {
+            return 0 <= h.Damage(actionValue);
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        return false;
     }
 }
