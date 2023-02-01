@@ -9,6 +9,7 @@ public class RPGVisualPiece : MonoBehaviour
 	public static event VisualPieceMovedAction VisualPieceMoved;
 
 	public Side PieceColor;
+	public int PieceSpeed;
 	public RPGSquares.Square CurrentSquare => RPGSquares.StringToSquare(transform.parent.name);
 
 	private const float SquareCollisionRadius = 9f;

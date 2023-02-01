@@ -43,9 +43,9 @@ public class RPGBoardManager : MonoBehaviourSingleton<RPGBoardManager>
 	{
 		ClearBoard();
 
-		//foreach ((RPGSquares.Square square, Piece piece) in RPGGameManager.Instance.CurrentPieces)
+		foreach ((RPGSquares.Square square, RPGPiece piece) in RPGGameManager.Instance.CurrentPieces)
 		{
-			//CreateAndPlacePieceGO(piece, square);
+			CreateAndPlacePieceGO(piece, square);
 		}
 
 		EnsureOnlyPiecesOfSideAreEnabled(RPGGameManager.Instance.SideToMove);
@@ -53,11 +53,11 @@ public class RPGBoardManager : MonoBehaviourSingleton<RPGBoardManager>
 
 	
 
-	public void CreateAndPlacePieceGO(Piece piece, RPGSquares.Square position)
+	public void CreateAndPlacePieceGO(RPGPiece piece, RPGSquares.Square position)
 	{
-		string modelName = $"{piece.Owner} {piece.GetType().Name}";
+		string modelName = $"{piece.Owner} {piece.name}";
 		GameObject pieceGO = Instantiate(
-			Resources.Load("PieceSets/Marble/" + modelName) as GameObject,
+			Resources.Load("PieceSets/RPGPieces/" + modelName) as GameObject,
 			positionMap[position].transform
 		);
 
@@ -87,7 +87,7 @@ public class RPGBoardManager : MonoBehaviourSingleton<RPGBoardManager>
 		RPGVisualPiece[] visualPiece = GetComponentsInChildren<RPGVisualPiece>(true);
 		foreach (RPGVisualPiece pieceBehaviour in visualPiece)
 		{
-			RPGVisualPiece piece = RPGGameManager.Instance.boardMatrix[pieceBehaviour.CurrentSquare.Rank - 1, pieceBehaviour.CurrentSquare.File - 1];
+			RPGPiece piece = RPGGameManager.Instance.boardMatrix[pieceBehaviour.CurrentSquare.Rank - 1, pieceBehaviour.CurrentSquare.File - 1];
 
 			pieceBehaviour.enabled = pieceBehaviour.PieceColor == side;
 									 
@@ -123,4 +123,18 @@ public class RPGBoardManager : MonoBehaviourSingleton<RPGBoardManager>
 	}
 
 	public GameObject GetSquareGOByPosition(RPGSquares.Square position) => Array.Find(allSquaresGO, go => go.name == RPGSquares.SquareToString(position));
+
+	public bool ValidatePieceMovement(RPGSquares.Movement move)
+	{
+		RPGVisualPiece visualPiece = positionMap[move.Start].GetComponentInChildren<RPGVisualPiece>();
+		if (visualPiece != null)
+        {
+			int xOff = Math.Abs(move.Start.File - move.End.File);
+			int yOff = Math.Abs(move.Start.Rank - move.End.Rank);
+
+			return visualPiece.PieceSpeed >= xOff + yOff;
+        }
+
+		return false;
+	}
 }
