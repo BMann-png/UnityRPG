@@ -6,12 +6,23 @@ using System.Threading.Tasks;
 using UnityChess;
 using UnityChess.Engine;
 using UnityEngine;
+using TMPro;
 
 public class RPGGameManager : MonoBehaviourSingleton<RPGGameManager>
 {
 	public static event Action NewGameStartedEvent;
 	public static event Action GameEndedEvent;
 	public static event Action MoveExecutedEvent;
+
+	[SerializeField] public GameObject wui;
+	[SerializeField] public TMP_Text wh;
+	[SerializeField] public GameObject bui;
+	[SerializeField] public TMP_Text bh;
+
+	private GameObject actionObject;
+	public GameObject targetObject;
+
+	bool pieceMovementActive = true;
 
 	public RPGPiece[,] boardMatrix = new RPGPiece[8, 8]
 	{
@@ -55,8 +66,24 @@ public class RPGGameManager : MonoBehaviourSingleton<RPGGameManager>
 		StartNewGame();
 	}
 
+    public void LateUpdate()
+    {
+		if (!pieceMovementActive && Input.GetMouseButtonDown(1))
+        {
+			RPGBoardManager.Instance.SetActiveAllPieces(true);
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+			if (Physics.Raycast(ray, out hit))
+			{
+				targetObject = hit.collider.gameObject;
+			}
 
-	public async void StartNewGame(bool isWhiteAI = false, bool isBlackAI = false)
+			Debug.Log(targetObject.GetComponent<RPGVisualPiece>().CurrentSquare);
+        }
+	}
+
+
+    public async void StartNewGame(bool isWhiteAI = false, bool isBlackAI = false)
 	{
 		NewGameStartedEvent?.Invoke();
 	}
@@ -76,7 +103,7 @@ public class RPGGameManager : MonoBehaviourSingleton<RPGGameManager>
 		}
 		else
 		{
-			RPGBoardManager.Instance.EnsureOnlyPiecesOfSideAreEnabled(SideToMove);
+			
 		}
 
 		MoveExecutedEvent?.Invoke();
@@ -107,13 +134,37 @@ public class RPGGameManager : MonoBehaviourSingleton<RPGGameManager>
             if (SideToMove == Side.White)
             {
                 SideToMove = Side.Black;
+				wui.SetActive(true);
             }
 			else
             {
 				SideToMove = Side.White;
+				bui.SetActive(true);
             }
-        }
+			actionObject = RPGBoardManager.Instance.GetPieceGOAtPosition(move.End);
+			Debug.Log(actionObject.GetComponent<RPGVisualPiece>().CurrentSquare);
 
+			pieceMovementActive = false;
+			RPGBoardManager.Instance.SetActiveAllPieces(false);
+		}
+    }
+
+	public void OnActionClick(int i)
+    {
+		if (actionObject.TryGetComponent<RPGActionDefinition>(out RPGActionDefinition ra))
+        {
+			if(ra.InteractWithPiece(i, targetObject)) 
+				RPGBoardManager.Instance.TryDestroyVisualPiece(targetObject.GetComponent<RPGVisualPiece>().CurrentSquare);
+			targetObject = null;
+			actionObject = null;
+
+
+			wui.SetActive(false);
+			bui.SetActive(false);
+
+			pieceMovementActive = true;
+			RPGBoardManager.Instance.EnsureOnlyPiecesOfSideAreEnabled(SideToMove);
+		}
     }
 
 	public void OnNewGameClick()

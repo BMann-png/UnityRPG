@@ -60,10 +60,6 @@ public class RPGBoardManager : MonoBehaviourSingleton<RPGBoardManager>
 			Resources.Load("PieceSets/RPGPieces/" + modelName) as GameObject,
 			positionMap[position].transform
 		);
-
-		/*if (!(piece is Knight) && !(piece is King)) {
-			pieceGO.transform.Rotate(0f, (float) rng.NextDouble() * 360f, 0f);
-		}*/
 	}
 
 	public void GetSquareGOsWithinRadius(List<GameObject> squareGOs, Vector3 positionWS, float radius)

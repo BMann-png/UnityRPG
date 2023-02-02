@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23639066967109124}
   - component: {fileID: -7285493980771796769}
   - component: {fileID: 5483103940109503548}
+  - component: {fileID: -7726352265848516984}
   - component: {fileID: 1762561525}
   m_Layer: 0
   m_Name: White King
@@ -113,6 +114,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitpoints: 4
+--- !u!114 &-7726352265848516984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031849599230294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd390b427c511604f80ff04381c2c849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ui: {fileID: 0}
+  h: {fileID: 0}
 --- !u!135 &1762561525
 SphereCollider:
   m_ObjectHideFlags: 0
